@@ -133,10 +133,10 @@ func New(opts Options) *Widevine {
 }
 
 // GetContentKey creates a content key giving a contentID.
-func (wp *Widevine) GetContentKey(contentID string, policy Policy) GetContentKeyResponse {
+func (wp *Widevine) GetContentKey(contentID string, policy Policy, isUat bool) GetContentKeyResponse {
 	p := wp.setPolicy(contentID, policy)
 	msg := wp.buildCKMessage(p)
-	resp := wp.getContentKeyRequest(msg)
+	resp := wp.getContentKeyRequest(msg, isUat)
 
 	// TODO
 	// Build custom PSSH from protobuf.
@@ -146,9 +146,9 @@ func (wp *Widevine) GetContentKey(contentID string, policy Policy) GetContentKey
 }
 
 // GetLicense creates a license request used with a proxy server.
-func (wp *Widevine) GetLicense(contentID string, body string) GetLicenseResponse {
+func (wp *Widevine) GetLicense(contentID string, body string, isUat bool) GetLicenseResponse {
 	msg := wp.buildLicenseMessage(contentID, body)
-	resp := wp.getLicenseRequest(msg)
+	resp := wp.getLicenseRequest(msg, isUat)
 	return resp
 }
 
@@ -218,11 +218,11 @@ func (wp *Widevine) buildLicenseMessage(contentID string, body string) map[strin
 	return postBody
 }
 
-func (wp *Widevine) getContentKeyRequest(body map[string]interface{}) GetContentKeyResponse {
+func (wp *Widevine) getContentKeyRequest(body map[string]interface{}, isUat bool) GetContentKeyResponse {
 	// Set production or test portal.
 	var url string
-	if wp.Provider == "widevine_test" {
-		url = widevineCloudURLTest + "/cenc/getcontentkey/widevine_test"
+	if isUat {
+		url = widevineCloudURLTest + "/cenc/getcontentkey/" + wp.Provider
 	} else {
 		url = widevineCloudURL + "/cenc/getcontentkey/" + wp.Provider
 	}
@@ -239,13 +239,13 @@ func (wp *Widevine) getContentKeyRequest(body map[string]interface{}) GetContent
 	return output
 }
 
-func (wp *Widevine) getLicenseRequest(body map[string]interface{}) GetLicenseResponse {
+func (wp *Widevine) getLicenseRequest(body map[string]interface{}, isUat bool) GetLicenseResponse {
 	// Set production or test portal.
 	var url string
-	if wp.Provider == "widevine_test" {
-		url = widevineCloudURLTest + "/cenc/getlicense"
+	if isUat {
+		url = widevineCloudURLTest + "/cenc/getcontentkey/" + wp.Provider
 	} else {
-		url = widevineCloudURL + "/cenc/getlicense"
+		url = widevineCloudURL + "/cenc/getcontentkey/" + wp.Provider
 	}
 	// Make client call.
 	resp := GetLicenseResponse{}
