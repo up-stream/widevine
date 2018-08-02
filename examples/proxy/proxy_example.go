@@ -49,7 +49,7 @@ func proxy(w http.ResponseWriter, r *http.Request) {
 	wv := widevine.New(options)
 
 	// Create license request.
-	data := wv.GetLicense(contentID, body)
+	data := wv.GetLicense(contentID, body, true)
 	b, _ := base64.StdEncoding.DecodeString(data.License)
 
 	// Log any additional details from response.

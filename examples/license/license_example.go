@@ -42,7 +42,7 @@ func main() {
 	}
 
 	// Make the request to generate or get a content key.
-	resp := wv.GetContentKey(contentID, policy)
+	resp := wv.GetContentKey(contentID, policy, true)
 
 	// Response data from Widevine Cloud.
 	fmt.Println("status: ", resp.Status)
