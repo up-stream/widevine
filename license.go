@@ -146,8 +146,8 @@ func (wp *Widevine) GetContentKey(contentID string, policy Policy, isUat bool) G
 }
 
 // GetLicense creates a license request used with a proxy server.
-func (wp *Widevine) GetLicense(contentID string, body string, isUat bool) GetLicenseResponse {
-	msg := wp.buildLicenseMessage(contentID, body)
+func (wp *Widevine) GetLicense(body string, isUat bool) GetLicenseResponse {
+	msg := wp.buildLicenseMessage(body)
 	resp := wp.getLicenseRequest(msg, isUat)
 	return resp
 }
@@ -196,12 +196,9 @@ func (wp *Widevine) setPolicy(contentID string, policy Policy) map[string]interf
 	return p
 }
 
-func (wp *Widevine) buildLicenseMessage(contentID string, body string) map[string]interface{} {
-	enc := base64.StdEncoding.EncodeToString([]byte(contentID))
-
+func (wp *Widevine) buildLicenseMessage(body string) map[string]interface{} {
 	message := map[string]interface{}{
 		"payload":             body,
-		"content_id":          enc,
 		"provider":            wp.Provider,
 		"allowed_track_types": "SD_UHD1",
 	}
