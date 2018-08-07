@@ -243,9 +243,9 @@ func (wp *Widevine) getLicenseRequest(body map[string]interface{}, isUat bool) G
 	// Set production or test portal.
 	var url string
 	if isUat {
-		url = widevineCloudURLTest + "/cenc/getcontentkey/" + wp.Provider
+		url = widevineCloudURLTest + "/cenc/getlicense"
 	} else {
-		url = widevineCloudURL + "/cenc/getcontentkey/" + wp.Provider
+		url = widevineCloudURL + "/cenc/getlicense"
 	}
 	// Make client call.
 	resp := GetLicenseResponse{}
