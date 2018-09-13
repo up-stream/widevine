@@ -201,6 +201,16 @@ func (wp *Widevine) buildLicenseMessage(body string) map[string]interface{} {
 		"payload":             body,
 		"provider":            wp.Provider,
 		"allowed_track_types": "SD_UHD1",
+		"policy_overrides": map[string]interface{}{
+			// TODO: renew周り、特にホスト名やエンドポイントを外から渡す方法について検討しておきたい。
+			"can_play":                  true,
+			"can_persist":               true,
+			"can_renew":                 true,
+			"renewal_server_url":        "https://senis.serveo.net/widevine/getLicense",
+			"license_duration_seconds":  120,
+			"rental_duration_seconds":   120,
+			"playback_duration_seconds": 120,
+		},
 	}
 	jsonMessage, _ := json.Marshal(message)
 	b64message := base64.StdEncoding.EncodeToString(jsonMessage)
